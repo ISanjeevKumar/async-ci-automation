@@ -1,0 +1,44 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-and-wait-for-payment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create Payment Instructions and Wait for Completion for Journey 1
+        run: |
+          node scripts/createPayment.js journey1
+          node scripts/waitForPaymentCompletion.js journey1
+
+  run-post-payment-e2e-tests:
+    runs-on: ubuntu-latest
+    needs: create-and-wait-for-payment
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Playwright E2E Tests for Journey 1
+        run: npx playwright tests
