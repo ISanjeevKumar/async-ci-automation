@@ -2,7 +2,18 @@ const fs = require('fs');
 const path = require('path');
 
 const journey = process.argv[2];
-const paymentsFilePath = path.join(__dirname, '../data/payments.json');
+const dataDir = path.join(__dirname, '../data');
+const paymentsFilePath = path.join(dataDir, 'payments.json');
+
+// Ensure the data directory exists
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+}
+
+// Ensure the payments.json file exists
+if (!fs.existsSync(paymentsFilePath)) {
+    fs.writeFileSync(paymentsFilePath, '[]');
+}
 
 // Read existing payment data
 let payments = [];
