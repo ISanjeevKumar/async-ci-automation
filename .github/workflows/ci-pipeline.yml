@@ -17,13 +17,16 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: Install dependencies
-        run: yarn install
-
       - name: Create Payment Instructions and Wait for Completion for Journey 1
         run: |
           node scripts/createPayment.js journey1
           node scripts/waitForPaymentCompletion.js journey1
+
+      - name: Upload payment IDs for Journey 1
+        uses: actions/upload-artifact@v2
+        with:
+          name: journey1-payment-ids
+          path: scripts/journey1_payment_ids.txt
 
   run-post-payment-e2e-tests:
     runs-on: ubuntu-latest
@@ -39,6 +42,12 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Download payment IDs for Journey 1
+        uses: actions/download-artifact@v2
+        with:
+          name: journey1-payment-ids
+          path: scripts
 
       - name: Run Playwright E2E Tests for Journey 1
         run: npx playwright test
