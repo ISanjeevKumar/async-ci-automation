@@ -41,4 +41,4 @@ jobs:
         run: npm install
 
       - name: Run Playwright E2E Tests for Journey 1
-        run: npx playwright tests
+        run: npx playwright test
